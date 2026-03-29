@@ -33,3 +33,9 @@ class SymbolTable:
 
         self.table[lexeme] = symbol
         return symbol
+    
+    def __repr__(self):
+        lines = ["SymbolTable:"]
+        for sym in self.table.values():
+            lines.append(f"  {sym}")
+        return "\n".join(lines)

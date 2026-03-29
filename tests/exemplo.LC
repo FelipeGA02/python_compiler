@@ -1,0 +1,308 @@
+inicio exemplo_completo;
+
+/* ================================================
+   Programa de teste completo da linguagem LC
+   Testa: declaracoes, atribuicao, operadores,
+          condicionais, lacos, leitura e escrita
+   ================================================ */
+
+/* --- declaracao de variaveis --- */
+contador  : inteiro;
+soma      : inteiro;
+produto   : inteiro;
+resto     : inteiro;
+quociente : inteiro;
+i         : inteiro;
+n         : inteiro;
+a         : inteiro;
+b         : inteiro;
+
+media     : real;
+pi        : real;
+area      : real;
+raio      : real;
+
+ativo     : logico;
+encontrou : logico;
+par       : logico;
+
+mensagem  : caractere;
+nome      : caractere;
+
+/* --- constantes iniciais --- */
+pi := 3.14159;
+n  := 10;
+a  := 36;
+b  := 24;
+
+/* ================================================
+   Bloco 1: operadores aritmeticos basicos
+   ================================================ */
+
+soma      := a + b;
+produto   := a * b;
+resto     := a mod b;
+quociente := a div b;
+
+escreva(soma);
+escreva(produto);
+escreva(resto);
+escreva(quociente);
+
+/* ================================================
+   Bloco 2: operadores relacionais e logicos
+   ================================================ */
+
+ativo     := verdadeiro;
+encontrou := falso;
+
+/* testa == */
+se a == b entao
+inicio
+    escreva("a igual a b")
+fim
+senao
+inicio
+    escreva("a diferente de b")
+fim;
+
+/* testa <> */
+se a <> b entao
+inicio
+    escreva("valores distintos")
+fim;
+
+/* testa <= e >= */
+se a >= b entao
+inicio
+    escreva("a maior ou igual")
+fim;
+
+se b <= a entao
+inicio
+    escreva("b menor ou igual")
+fim;
+
+/* testa && */
+se ativo && encontrou entao
+inicio
+    escreva("ativo e encontrou")
+fim
+senao
+inicio
+    escreva("condicao && falsa")
+fim;
+
+/* testa ou */
+se ativo ou encontrou entao
+inicio
+    escreva("pelo menos um verdadeiro")
+fim;
+
+/* ================================================
+   Bloco 3: laco enquanto — soma de 1 ate n
+   ================================================ */
+
+i    := 1;
+soma := 0;
+
+enquanto i <= n faca
+inicio
+    soma := soma + i;
+    i    := i + 1
+fim;
+
+escreva(soma);
+
+/* ================================================
+   Bloco 4: laco enquanto — fatorial de 6
+   ================================================ */
+
+n       := 6;
+i       := 1;
+produto := 1;
+
+enquanto i <= n faca
+inicio
+    produto := produto * i;
+    i       := i + 1
+fim;
+
+escreva(produto);
+
+/* ================================================
+   Bloco 5: laco com condicional interna
+             conta pares e impares de 1 a 20
+   ================================================ */
+
+i         := 1;
+contador  := 0;
+encontrou := falso;
+
+enquanto i <= 20 faca
+inicio
+    resto := i mod 2;
+
+    se resto == 0 entao
+    inicio
+        par      := verdadeiro;
+        contador := contador + 1
+    fim
+    senao
+    inicio
+        par := falso
+    fim;
+
+    /* detecta primeiro multiplo de 7 */
+    resto := i mod 7;
+    se resto == 0 entao
+    inicio
+        encontrou := verdadeiro
+    fim;
+
+    i := i + 1
+fim;
+
+escreva(contador);
+
+/* ================================================
+   Bloco 6: area do circulo
+   ================================================ */
+
+raio := 5.0;
+area := pi * raio * raio;
+
+escreva(area);
+
+/* ================================================
+   Bloco 7: media de cinco valores fixos
+   ================================================ */
+
+a    := 7;
+b    := 9;
+n    := 5;
+soma := a + b + 8 + 6 + 10;
+
+/* media usa operador div (divisao inteira) */
+quociente := soma div n;
+escreva(quociente);
+
+/* media real */
+media := 3.14159 * 2.0;
+escreva(media);
+
+/* ================================================
+   Bloco 8: laco regressivo com saida de string
+   ================================================ */
+
+i := 5;
+
+enquanto i > 0 faca
+inicio
+    escreva("contagem regressiva");
+    i := i - 1
+fim;
+
+escreva("fim da contagem");
+
+/* ================================================
+   Bloco 9: leitura de dados do usuario
+   ================================================ */
+
+leia(a);
+leia(b);
+
+se a > b entao
+inicio
+    escreva("primeiro maior")
+fim
+senao
+inicio
+    se a < b entao
+    inicio
+        escreva("segundo maior")
+    fim
+    senao
+    inicio
+        escreva("sao iguais")
+    fim
+fim;
+
+/* ================================================
+   Bloco 10: operador de concatenacao de string (+)
+   ================================================ */
+
+mensagem := "resultado: ";
+escreva(mensagem);
+
+/* ================================================
+   Bloco 11: lacos aninhados — tabuada de 1 a 3
+   ================================================ */
+
+i := 1;
+
+enquanto i <= 3 faca
+inicio
+    contador := 1;
+
+    enquanto contador <= 10 faca
+    inicio
+        produto  := i * contador;
+        escreva(produto);
+        contador := contador + 1
+    fim;
+
+    i := i + 1
+fim;
+
+/* ================================================
+   Bloco 12: encadeamento de condicionais
+   ================================================ */
+
+n := 42;
+
+se n > 100 entao
+inicio
+    escreva("grande")
+fim
+senao
+inicio
+    se n > 50 entao
+    inicio
+        escreva("medio")
+    fim
+    senao
+    inicio
+        se n > 10 entao
+        inicio
+            escreva("pequeno")
+        fim
+        senao
+        inicio
+            escreva("muito pequeno")
+        fim
+    fim
+fim;
+
+/* ================================================
+   Bloco 13: operadores mod e div combinados
+   ================================================ */
+
+a         := 100;
+quociente := a div 7;
+resto     := a mod 7;
+
+escreva(quociente);
+escreva(resto);
+
+/* verifica divisibilidade */
+se resto == 0 entao
+inicio
+    escreva("divisivel por 7")
+fim
+senao
+inicio
+    escreva("nao divisivel por 7")
+fim
+
+fim

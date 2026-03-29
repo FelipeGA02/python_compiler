@@ -24,6 +24,7 @@ class TokenType(Enum):
     SENAO = "senao"
     ENQUANTO = "enquanto"
     FACA = "faca"
+    ENTAO   = "entao"
 
     LEIA = "leia"
     ESCREVA = "escreva"
@@ -71,6 +72,7 @@ RESERVED_WORDS = {
     "senao": TokenType.SENAO,
     "enquanto": TokenType.ENQUANTO,
     "faca": TokenType.FACA,
+    "entao": TokenType.ENTAO,
 
     "leia": TokenType.LEIA,
     "escreva": TokenType.ESCREVA,
