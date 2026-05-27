@@ -1,12 +1,14 @@
 from enum import Enum
 
 class Token:
-    def __init__(self, type, lexeme):
+    def __init__(self, type, lexeme, line: int = 0, col: int = 0):
         self.type = type
         self.lexeme = lexeme
+        self.line = line
+        self.col = col
 
     def __repr__(self):
-        return f"Token({self.type}, {self.lexeme})"
+        return f"Token({self.type}, {self.lexeme!r}, linha={self.line})"
 class TokenType(Enum):
     ID = "ID"
 
@@ -51,6 +53,7 @@ class TokenType(Enum):
 
     AND = "&&"
     OR = "ou"
+    NOT = "not"
 
     ATRIBUICAO = ":="
 
@@ -85,5 +88,6 @@ RESERVED_WORDS = {
 
     "div": TokenType.DIV_INT,
     "mod": TokenType.MOD,
-    "ou": TokenType.OR
+    "ou": TokenType.OR,
+    "not": TokenType.NOT,
 }

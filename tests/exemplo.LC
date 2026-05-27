@@ -1,308 +1,392 @@
-inicio exemplo_completo;
+inicio exemplo_completo ;
 
-/* ================================================
-   Programa de teste completo da linguagem LC
-   Testa: declaracoes, atribuicao, operadores,
-          condicionais, lacos, leitura e escrita
-   ================================================ */
+/* ================================================================
+   PROGRAMA DE TESTE COMPLETO — Linguagem BRL
+   Cobre todos os construtos validos da especificacao:
+     - Todos os 4 tipos de variaveis
+     - Declaracao individual e multi-ID
+     - Todos os operadores (aritmeticos, logicos, relacionais, unarios)
+     - Precedencia e parenteses
+     - Todas as instrucoes (atrib, se, enquanto, leia, escreva)
+     - Concatenacao de strings
+     - Promocao implicita inteiro -> real
+     - Comentarios simples e de multiplas linhas
+     - Identificadores com letras, digitos e sublinhado
+   ================================================================ */
 
-/* --- declaracao de variaveis --- */
-contador  : inteiro;
-soma      : inteiro;
-produto   : inteiro;
-resto     : inteiro;
-quociente : inteiro;
-i         : inteiro;
-n         : inteiro;
-a         : inteiro;
-b         : inteiro;
+/* ----------------------------------------------------------------
+   SECAO 1 — DECLARACOES
+   Regra: id [, id] : tipo ;
+   Testa declaracao individual e multi-ID para cada tipo
+   ---------------------------------------------------------------- */
 
-media     : real;
-pi        : real;
-area      : real;
-raio      : real;
+/* 1a. tipo inteiro — individual */
+a         : inteiro ;
+b         : inteiro ;
+soma      : inteiro ;
+produto   : inteiro ;
+quociente : inteiro ;
+resto     : inteiro ;
+contador  : inteiro ;
 
-ativo     : logico;
-encontrou : logico;
-par       : logico;
+/* 1b. tipo inteiro — multi-ID na mesma declaracao */
+i , n , c : inteiro ;
 
-mensagem  : caractere;
-nome      : caractere;
+/* 1c. tipo real — individual */
+pi   : real ;
+raio : real ;
+area : real ;
 
-/* --- constantes iniciais --- */
-pi := 3.14159;
-n  := 10;
-a  := 36;
-b  := 24;
+/* 1d. tipo real — multi-ID */
+x_real , y_real , media : real ;
 
-/* ================================================
-   Bloco 1: operadores aritmeticos basicos
-   ================================================ */
+/* 1e. tipo logico — individual */
+ativo     : logico ;
+encontrou : logico ;
+par       : logico ;
 
-soma      := a + b;
-produto   := a * b;
-resto     := a mod b;
-quociente := a div b;
+/* 1f. tipo logico — multi-ID */
+cond , flag1 , flag2 : logico ;
 
-escreva(soma);
-escreva(produto);
-escreva(resto);
-escreva(quociente);
+/* 1g. tipo caractere — individual */
+msg1 : caractere ;
+msg2 : caractere ;
 
-/* ================================================
-   Bloco 2: operadores relacionais e logicos
-   ================================================ */
+/* 1h. tipo caractere — multi-ID + ID com sublinhado e digito */
+nome , _var1 , str_aux : caractere ;
 
-ativo     := verdadeiro;
-encontrou := falso;
+/* ----------------------------------------------------------------
+   SECAO 2 — ATRIBUICOES DE CONSTANTES
+   Regra: id := EXP ;
+   Testa CONST_INT, CONST_REAL, CONST_BOOL, CONST_STRING
+   ---------------------------------------------------------------- */
 
-/* testa == */
+/* 2a. constantes inteiras (CONST_INT) */
+a        := 36 ;
+b        := 24 ;
+c        := 0 ;
+i        := 1 ;
+n        := 10 ;
+contador := 0 ;
+soma     := 0 ;
+produto  := 1 ;
+
+/* 2b. constantes reais (CONST_REAL: digito . digito obrigatorio) */
+pi   := 3.14159 ;
+raio := 5.0 ;
+
+/* 2c. constantes logicas: verdadeiro e falso */
+ativo     := verdadeiro ;
+encontrou := falso ;
+flag1     := verdadeiro ;
+flag2     := falso ;
+
+/* 2d. constantes caractere (CONST_STRING) — chars validos da spec */
+msg1    := "Ola, mundo! Teste BRL 2026." ;
+msg2    := "linha-2: result=OK; path=/tmp" ;
+nome    := "BRL_compilador_v1" ;
+_var1   := "ID com sublinhado inicial" ;
+str_aux := "chars: .,;:()[]{}+-*/|!?<>=" ;
+
+/* ----------------------------------------------------------------
+   SECAO 3 — OPERADORES ARITMETICOS
+   Precedencia: (* / div mod &&) > (+ - ou) > (relops)
+   ---------------------------------------------------------------- */
+
+/* 3a. adição, subtração */
+soma := a + b ;
+c    := a - b ;
+
+/* 3b. multiplicacao */
+produto := a * b ;
+
+/* 3c. divisao real (/ em inteiro -> inteiro no nosso tipo) */
+quociente := a / b ;
+
+/* 3d. divisao inteira e modulo (div e mod requerem inteiro) */
+quociente := a div b ;
+resto     := a mod b ;
+
+/* 3e. operadores sobre real */
+area  := pi * raio * raio ;
+media := pi / raio ;
+
+/* 3f. expressao mista: inteiro op inteiro op inteiro */
+soma := a + b + c + n ;
+
+/* ----------------------------------------------------------------
+   SECAO 4 — PROMOCAO IMPLICITA inteiro -> real
+   Valida: real := inteiro  (promocao)
+   Invalida: inteiro := real  (testada no script de erros)
+   ---------------------------------------------------------------- */
+
+x_real := a ;       /* inteiro atribuido a real: promocao valida */
+y_real := 3 ;       /* CONST_INT atribuida a real: valido */
+media  := a + b ;   /* inteiro + inteiro -> inteiro; promovido para real */
+
+/* ----------------------------------------------------------------
+   SECAO 5 — OPERADORES UNARIOS
+   Regra: not <exp_un> | + <exp_un> | - <exp_un>
+   ---------------------------------------------------------------- */
+
+soma  := - a ;          /* unario - em inteiro */
+soma  := + b ;          /* unario + em inteiro */
+media := - pi ;         /* unario - em real */
+cond  := not flag1 ;    /* not em logico */
+cond  := not ( flag1 && flag2 ) ;   /* not sobre expressao parentesada */
+
+/* ----------------------------------------------------------------
+   SECAO 6 — OPERADORES LOGICOS (&&  ou)
+   Ambos os operandos devem ser logico -> resultado logico
+   ---------------------------------------------------------------- */
+
+cond := flag1 && flag2 ;
+cond := flag1 ou flag2 ;
+cond := not flag1 && ativo ;      /* (not flag1) && ativo */
+cond := flag1 ou flag2 && ativo ; /* flag1 ou (flag2 && ativo) */
+
+/* ----------------------------------------------------------------
+   SECAO 7 — OPERADORES RELACIONAIS (todos os 6)
+   Resultado sempre logico
+   ---------------------------------------------------------------- */
+
+/* 7a. sobre inteiro */
+cond := a == b ;
+cond := a <> b ;
+cond := a <  b ;
+cond := a >  b ;
+cond := a <= b ;
+cond := a >= b ;
+
+/* 7b. sobre real */
+cond := pi >  raio ;
+cond := pi <= media ;
+cond := pi == media ;
+cond := raio <> area ;
+
+/* 7c. sobre caractere (== e <> validos; < > <= >= tambem pelo semantico) */
+cond := msg1 == msg2 ;
+cond := msg1 <> msg2 ;
+
+/* ----------------------------------------------------------------
+   SECAO 8 — CONCATENACAO DE STRINGS (+)
+   caractere + caractere -> caractere
+   ---------------------------------------------------------------- */
+
+nome    := msg1 + msg2 ;
+str_aux := msg1 + " | " + msg2 ;
+
+/* ----------------------------------------------------------------
+   SECAO 9 — PRECEDENCIA E PARENTESES
+   ---------------------------------------------------------------- */
+
+soma    := ( a + b ) * c ;
+soma    := a + ( b * c ) ;
+soma    := ( a + b ) * ( a - b ) ;
+soma    := a * b + c * n ;             /* sem paren: * antes de + */
+cond    := ( a + b ) >= ( c + n ) ;
+cond    := not ( flag1 ou flag2 ) ;
+produto := ( a + b ) * ( a + b ) ;
+
+/* ----------------------------------------------------------------
+   SECAO 10 — INSTRUCAO leia
+   Formato: leia ( id [, id] )
+   ---------------------------------------------------------------- */
+
+leia ( a ) ;                     /* variavel unica — inteiro */
+leia ( b , c ) ;                 /* dois inteiros */
+leia ( i , n , contador ) ;      /* tres inteiros */
+leia ( pi ) ;                    /* real */
+leia ( flag1 ) ;                 /* logico */
+leia ( msg1 ) ;                  /* caractere */
+leia ( x_real , y_real ) ;       /* dois reais */
+
+/* ----------------------------------------------------------------
+   SECAO 11 — INSTRUCAO escreva
+   Formato: escreva ( EXP )  — aceita qualquer expressao
+   ---------------------------------------------------------------- */
+
+escreva ( a ) ;                       /* variavel inteiro */
+escreva ( pi ) ;                      /* variavel real */
+escreva ( flag1 ) ;                   /* variavel logico */
+escreva ( msg1 ) ;                    /* variavel caractere */
+escreva ( a + b ) ;                   /* expressao inteiro */
+escreva ( pi * raio ) ;               /* expressao real */
+escreva ( a == b ) ;                  /* expressao logico */
+escreva ( msg1 + msg2 ) ;             /* concatenacao */
+escreva ( "string literal direta" ) ; /* CONST_STRING direta */
+escreva ( 42 ) ;                      /* CONST_INT direta */
+escreva ( 3.14 ) ;                    /* CONST_REAL direta */
+escreva ( verdadeiro ) ;              /* CONST_BOOL direta */
+escreva ( falso ) ;                   /* CONST_BOOL direta */
+escreva ( - a ) ;                     /* unario em expressao */
+escreva ( not flag1 ) ;               /* not em expressao */
+escreva ( ( a + b ) * c ) ;           /* expressao com parenteses */
+
+/* ----------------------------------------------------------------
+   SECAO 12 — INSTRUCAO se (sem senao)
+   Formato: se EXP entao inicio instrucoes fim
+   ---------------------------------------------------------------- */
+
 se a == b entao
 inicio
-    escreva("a igual a b")
-fim
-senao
-inicio
-    escreva("a diferente de b")
-fim;
+    escreva ( "a igual a b" )
+fim ;
 
-/* testa <> */
 se a <> b entao
 inicio
-    escreva("valores distintos")
-fim;
+    escreva ( "a diferente de b" )
+fim ;
 
-/* testa <= e >= */
+se ativo entao
+inicio
+    escreva ( "ativo verdadeiro" )
+fim ;
+
+/* ----------------------------------------------------------------
+   SECAO 13 — INSTRUCAO se-senao
+   Formato: se EXP entao inicio ... fim senao inicio ... fim
+   ---------------------------------------------------------------- */
+
 se a >= b entao
 inicio
-    escreva("a maior ou igual")
-fim;
-
-se b <= a entao
-inicio
-    escreva("b menor ou igual")
-fim;
-
-/* testa && */
-se ativo && encontrou entao
-inicio
-    escreva("ativo e encontrou")
+    escreva ( "a maior ou igual a b" )
 fim
 senao
 inicio
-    escreva("condicao && falsa")
-fim;
+    escreva ( "b maior que a" )
+fim ;
 
-/* testa ou */
-se ativo ou encontrou entao
+se flag1 && flag2 entao
 inicio
-    escreva("pelo menos um verdadeiro")
-fim;
+    escreva ( "ambos verdadeiros" )
+fim
+senao
+inicio
+    escreva ( "pelo menos um falso" )
+fim ;
 
-/* ================================================
-   Bloco 3: laco enquanto — soma de 1 ate n
-   ================================================ */
+/* ----------------------------------------------------------------
+   SECAO 14 — se ANINHADO (3 niveis)
+   ---------------------------------------------------------------- */
 
-i    := 1;
-soma := 0;
+se a > 100 entao
+inicio
+    escreva ( "grande" )
+fim
+senao
+inicio
+    se a > 10 entao
+    inicio
+        escreva ( "medio" )
+    fim
+    senao
+    inicio
+        se a > 0 entao
+        inicio
+            escreva ( "pequeno" )
+        fim
+        senao
+        inicio
+            escreva ( "zero ou negativo" )
+        fim
+    fim
+fim ;
+
+/* ----------------------------------------------------------------
+   SECAO 15 — INSTRUCAO enquanto (basico)
+   Formato: enquanto EXP faca inicio instrucoes fim
+   ---------------------------------------------------------------- */
+
+i    := 1 ;
+soma := 0 ;
 
 enquanto i <= n faca
 inicio
-    soma := soma + i;
+    soma := soma + i ;
     i    := i + 1
-fim;
+fim ;
 
-escreva(soma);
+escreva ( soma ) ;
 
-/* ================================================
-   Bloco 4: laco enquanto — fatorial de 6
-   ================================================ */
+/* ----------------------------------------------------------------
+   SECAO 16 — enquanto com condicional interna
+   ---------------------------------------------------------------- */
 
-n       := 6;
-i       := 1;
-produto := 1;
-
-enquanto i <= n faca
-inicio
-    produto := produto * i;
-    i       := i + 1
-fim;
-
-escreva(produto);
-
-/* ================================================
-   Bloco 5: laco com condicional interna
-             conta pares e impares de 1 a 20
-   ================================================ */
-
-i         := 1;
-contador  := 0;
-encontrou := falso;
+i        := 1 ;
+contador := 0 ;
+par      := falso ;
 
 enquanto i <= 20 faca
 inicio
-    resto := i mod 2;
-
+    resto := i mod 2 ;
     se resto == 0 entao
     inicio
-        par      := verdadeiro;
+        par      := verdadeiro ;
         contador := contador + 1
     fim
     senao
     inicio
         par := falso
-    fim;
-
-    /* detecta primeiro multiplo de 7 */
-    resto := i mod 7;
-    se resto == 0 entao
-    inicio
-        encontrou := verdadeiro
-    fim;
-
+    fim ;
     i := i + 1
-fim;
+fim ;
 
-escreva(contador);
+escreva ( contador ) ;
 
-/* ================================================
-   Bloco 6: area do circulo
-   ================================================ */
+/* ----------------------------------------------------------------
+   SECAO 17 — LACOS ANINHADOS
+   ---------------------------------------------------------------- */
 
-raio := 5.0;
-area := pi * raio * raio;
-
-escreva(area);
-
-/* ================================================
-   Bloco 7: media de cinco valores fixos
-   ================================================ */
-
-a    := 7;
-b    := 9;
-n    := 5;
-soma := a + b + 8 + 6 + 10;
-
-/* media usa operador div (divisao inteira) */
-quociente := soma div n;
-escreva(quociente);
-
-/* media real */
-media := 3.14159 * 2.0;
-escreva(media);
-
-/* ================================================
-   Bloco 8: laco regressivo com saida de string
-   ================================================ */
-
-i := 5;
-
-enquanto i > 0 faca
-inicio
-    escreva("contagem regressiva");
-    i := i - 1
-fim;
-
-escreva("fim da contagem");
-
-/* ================================================
-   Bloco 9: leitura de dados do usuario
-   ================================================ */
-
-leia(a);
-leia(b);
-
-se a > b entao
-inicio
-    escreva("primeiro maior")
-fim
-senao
-inicio
-    se a < b entao
-    inicio
-        escreva("segundo maior")
-    fim
-    senao
-    inicio
-        escreva("sao iguais")
-    fim
-fim;
-
-/* ================================================
-   Bloco 10: operador de concatenacao de string (+)
-   ================================================ */
-
-mensagem := "resultado: ";
-escreva(mensagem);
-
-/* ================================================
-   Bloco 11: lacos aninhados — tabuada de 1 a 3
-   ================================================ */
-
-i := 1;
+i := 1 ;
 
 enquanto i <= 3 faca
 inicio
-    contador := 1;
-
-    enquanto contador <= 10 faca
+    n := 1 ;
+    enquanto n <= 3 faca
     inicio
-        produto  := i * contador;
-        escreva(produto);
-        contador := contador + 1
-    fim;
-
+        produto := i * n ;
+        escreva ( produto ) ;
+        n := n + 1
+    fim ;
     i := i + 1
-fim;
+fim ;
 
-/* ================================================
-   Bloco 12: encadeamento de condicionais
-   ================================================ */
+/* ----------------------------------------------------------------
+   SECAO 18 — EXPRESSAO COMPLEXA NA CONDICAO
+   ---------------------------------------------------------------- */
 
-n := 42;
-
-se n > 100 entao
+se ( a + b ) > ( n * 2 ) entao
 inicio
-    escreva("grande")
-fim
-senao
+    escreva ( "soma maior que dobro de n" )
+fim ;
+
+enquanto not encontrou faca
 inicio
-    se n > 50 entao
-    inicio
-        escreva("medio")
-    fim
-    senao
-    inicio
-        se n > 10 entao
-        inicio
-            escreva("pequeno")
-        fim
-        senao
-        inicio
-            escreva("muito pequeno")
-        fim
-    fim
-fim;
+    escreva ( "buscando..." ) ;
+    encontrou := verdadeiro
+fim ;
 
-/* ================================================
-   Bloco 13: operadores mod e div combinados
-   ================================================ */
+/* ----------------------------------------------------------------
+   SECAO 19 — COMENTARIO DE MULTIPLAS LINHAS
+   Testa que o lexer ignora corretamente blocos de comentario
+   que abrangem multiplas linhas
+   ---------------------------------------------------------------- */
 
-a         := 100;
-quociente := a div 7;
-resto     := a mod 7;
+/* Este bloco de comentario
+   abrange varias linhas
+   e deve ser ignorado pelo lexer
+   sem interferir nos tokens seguintes */
 
-escreva(quociente);
-escreva(resto);
+escreva ( "apos comentario multi-linha" ) ;
 
-/* verifica divisibilidade */
-se resto == 0 entao
-inicio
-    escreva("divisivel por 7")
-fim
-senao
-inicio
-    escreva("nao divisivel por 7")
-fim
+/* ----------------------------------------------------------------
+   SECAO 20 — VERIFICACAO DE CASE SENSITIVITY
+   Identificadores com mesmo nome mas capitalizacao diferente
+   devem ser tratados como variaveis distintas (sensitive-case)
+   ---------------------------------------------------------------- */
+
+escreva ( msg1 ) ;
+escreva ( msg2 )
 
 fim

@@ -4,37 +4,39 @@ from src.lexer.token import Token, TokenType, RESERVED_WORDS
 
 class Lexer:
     """
-    AFD com os seguintes estados:
-      0        – inicial
-      1        – lendo letra/_ (identificador ou reservada)
-      3        – viu + ou - (pode ser sinal de constante ou operador)
-      4        – lendo dígitos inteiros
-      6        – viu ponto após dígitos (parte fracionária)
-      7        – lendo dígitos da fração
-      11       – viu primeiro '&'
-      13       – viu ':'
-      16       – viu '<'
-      18       – viu '>' ou primeiro '='
-      20       – dentro de string (consumindo chars)
-      22       – viu '/' (pode ser DIV ou início de comentário)
-      23       – dentro de comentário /* ... */
-      23b/'*'  – viu '*' dentro de comentário (possível fechamento)
- 
-    Estados finais (emitem token ao sair):
-      2  – ID / palavra reservada
-      5  – CONST_INT
-      8  – CONST_REAL
-      10 – token simples de 1 char ( + - * / ( ) , ; )
-      12 – &&
-      14 – :=
-      15 – :
-      17 – <  <=  <>
-      19 – >  >=  ==
-      21 – CONST_STRING
-      24 – comentário (descartado)
+        AFD com os seguintes estados:
+
+        Estados intermediários (não-finais):
+        0   inicial
+        1   lendo letra/_ (identificador ou reservada)
+        2   lendo dígitos inteiros
+        3   viu ponto após dígitos (parte fracionária)
+        4   lendo dígitos da fração
+        5   viu primeiro '&'
+        6   viu ':'
+        7   viu '<'
+        8   viu '>' ou primeiro '='
+        9   dentro de string (consumindo chars)
+        10  viu '/' (pode ser DIV ou início de comentário)
+        11  dentro de comentário /* ... */
+        12  viu '*' dentro de comentário (possível fechamento)
+
+        Estados finais (aceitação + emissão, retornam a q0):
+        13  ID / palavra reservada
+        14  CONST_INT
+        15  CONST_REAL
+        16  token simples de 1 char  ( + - * ( ) , ; )
+        17  &&
+        18  :=
+        19  :
+        20  <  <=  <>
+        21  >  >=  ==
+        22  CONST_STRING
+        23  / (DIV)
+        24  comentário (descartado)
     """
- 
-    # Mapeamento de tokens simples (1 char, exceto '/' que precisa lookahead)
+
+    # Tokens de 1 caractere emitidos diretamente em q0 (estado final q16)
     _SIMPLE_TOKENS = {
         '+': TokenType.MAIS,
         '-': TokenType.MENOS,
@@ -44,20 +46,20 @@ class Lexer:
         ',': TokenType.VIRGULA,
         ';': TokenType.PONTO_VIRGULA,
     }
- 
+
     def __init__(self, source: str):
         self.source  = source
-        self.pos     = 0          
+        self.pos     = 0
         self.line    = 1
         self.col     = 1
         self.tokens: list[Token] = []
         self.ts      = SymbolTable()
- 
+
     def _peek(self) -> str | None:
         if self.pos >= len(self.source):
             return None
         return self.source[self.pos]
- 
+
     def _advance(self) -> str | None:
         ch = self._peek()
         if ch is not None:
@@ -68,7 +70,7 @@ class Lexer:
             else:
                 self.col += 1
         return ch
- 
+
     def _back(self):
         """Devolve um caractere ao stream (retrocede 1 posição)."""
         if self.pos > 0:
@@ -79,199 +81,176 @@ class Lexer:
                 self.col = self.pos - prev_nl
             else:
                 self.col -= 1
- 
+
     def _emit(self, lexeme: str, token_type: TokenType) -> Token:
-        tok = Token(token_type, lexeme)
+        tok = Token(token_type, lexeme, self.line, self.col)
         self.tokens.append(tok)
         if token_type in (TokenType.ID, TokenType.CONST_INT,
                           TokenType.CONST_REAL, TokenType.CONST_STRING,
                           TokenType.CONST_BOOL) or token_type in RESERVED_WORDS.values():
             self.ts.insertToken(lexeme, token_type)
         return tok
- 
+
     def tokenize(self) -> list[Token]:
         estado = 0
         lexema = ""
- 
+
         while True:
-            b = self._advance() # loockahead
- 
+            b = self._advance()   # lê próximo caractere (lookahead)
+
             # ── q0: estado inicial ────────────────────────────────────
             if estado == 0:
                 if b is None:
                     self._emit("EOF", TokenType.EOF)
                     break
- 
+
                 # descarta espaço em branco
                 if b in (' ', '\t', '\n', '\r'):
                     continue
- 
-                # início de identificador ou palavra reservada
+
+                # início de identificador ou palavra reservada → q1
                 elif b.isalpha() or b == '_':
                     lexema = b
                     estado = 1
- 
-                # sinal de constante numérica ou operador aditivo
+
+                # operadores aditivos + e - (sempre operadores, nunca sinal) → q16*
                 elif b in ('+', '-'):
-                    next_ch = self._peek()
-                    if next_ch is not None and next_ch.isdigit():
-                        lexema = b
-                        estado = 3
-                    else:
-                        self._emit(b, self._SIMPLE_TOKENS[b])
- 
-                # constante inteira ou real sem sinal
+                    self._emit(b, self._SIMPLE_TOKENS[b])
+
+                # constante inteira ou real sem sinal → q2
                 elif b.isdigit():
                     lexema = b
-                    estado = 4
- 
-                # constante string
+                    estado = 2
+
+                # constante string → q9
                 elif b == '"':
                     lexema = b
-                    estado = 20
- 
-                # operador && (primeiro &)
+                    estado = 9
+
+                # operador && (primeiro '&') → q5
                 elif b == '&':
                     lexema = b
-                    estado = 11
- 
-                # atribuição := ou dois-pontos :
+                    estado = 5
+
+                # atribuição := ou dois-pontos : → q6
                 elif b == ':':
                     lexema = b
-                    estado = 13
- 
-                # relacionais < <= <>
+                    estado = 6
+
+                # relacionais < <= <> → q7
                 elif b == '<':
                     lexema = b
-                    estado = 16
- 
-                # relacionais > >=  ou  ==
+                    estado = 7
+
+                # relacionais > >=  ou  == → q8
                 elif b == '>':
                     lexema = b
-                    estado = 18
- 
+                    estado = 8
+
                 elif b == '=':
                     lexema = b
-                    estado = 18
- 
-                # divisão ou início de comentário
+                    estado = 8
+
+                # divisão ou início de comentário → q10
                 elif b == '/':
                     lexema = b
-                    estado = 22
- 
-                # tokens simples de 1 char
+                    estado = 10
+
+                # tokens simples de 1 char → q16*
                 elif b in self._SIMPLE_TOKENS:
                     self._emit(b, self._SIMPLE_TOKENS[b])
- 
+
                 else:
                     raise LexicalError(
                         f"caractere inesperado {b!r}", self.line, self.col)
- 
+
             # ── q1: lendo ID / palavra reservada ─────────────────────
             elif estado == 1:
                 if b is not None and (b.isalpha() or b.isdigit() or b == '_'):
                     lexema += b
                 else:
-                    # devolve o caractere que não faz parte do lexema
                     if b is not None:
                         self._back()
-                    # q2*: emite ID ou palavra reservada
+                    # q13*: emite ID ou palavra reservada
                     tok_type = RESERVED_WORDS.get(lexema, TokenType.ID)
-                    # verdadeiro / falso → CONST_BOOL
                     if tok_type in (TokenType.VERDADEIRO, TokenType.FALSO):
                         tok_type = TokenType.CONST_BOOL
                     self._emit(lexema, tok_type)
                     lexema = ""
                     estado = 0
- 
-            # ── q3: viu sinal + ou - antes de dígito ─────────────────
-            elif estado == 3:
-                if b is not None and b.isdigit():
-                    lexema += b
-                    estado = 4
-                else:
-                    # era operador simples, não sinal
-                    op = lexema[0]
-                    self._emit(op, self._SIMPLE_TOKENS[op])
-                    lexema = ""
-                    if b is not None:
-                        self._back()
-                    estado = 0
- 
-            # ── q4: lendo dígitos inteiros ────────────────────────────
-            elif estado == 4:
+
+            # ── q2: lendo dígitos inteiros ────────────────────────────
+            elif estado == 2:
                 if b is not None and b.isdigit():
                     lexema += b
                 elif b == '.':
-                    # verifica se próximo char é dígito (real) ou outro
                     next_ch = self._peek()
                     if next_ch is not None and next_ch.isdigit():
                         lexema += b
-                        estado = 6
+                        estado = 3           # → q3 (viu ponto)
                     else:
-                        # ponto não pertence ao número
                         self._back()
-                        # q5*: emite CONST_INT
+                        # q14*: emite CONST_INT
                         self._emit(lexema, TokenType.CONST_INT)
                         lexema = ""
                         estado = 0
                 else:
                     if b is not None:
                         self._back()
-                    # q5*: emite CONST_INT
+                    # q14*: emite CONST_INT
                     self._emit(lexema, TokenType.CONST_INT)
                     lexema = ""
                     estado = 0
- 
-            # ── q6: viu ponto — aguarda dígito da fração ─────────────
-            elif estado == 6:
+
+            # ── q3: viu ponto — aguarda dígito da fração ─────────────
+            elif estado == 3:
                 if b is not None and b.isdigit():
                     lexema += b
-                    estado = 7
+                    estado = 4               # → q4 (lendo fração)
                 else:
                     raise LexicalError(
                         f"real mal formado: {lexema!r}", self.line, self.col)
- 
-            # ── q7: lendo dígitos da fração ───────────────────────────
-            elif estado == 7:
+
+            # ── q4: lendo dígitos da fração ───────────────────────────
+            elif estado == 4:
                 if b is not None and b.isdigit():
                     lexema += b
                 else:
                     if b is not None:
                         self._back()
-                    # q8*: emite CONST_REAL
+                    # q15*: emite CONST_REAL
                     self._emit(lexema, TokenType.CONST_REAL)
                     lexema = ""
                     estado = 0
- 
-            # ── q11: viu primeiro '&' ─────────────────────────────────
-            elif estado == 11:
+
+            # ── q5: viu primeiro '&' ──────────────────────────────────
+            elif estado == 5:
                 if b == '&':
                     lexema += b
-                    # q12*: emite &&
+                    # q17*: emite &&
                     self._emit(lexema, TokenType.AND)
                     lexema = ""
                     estado = 0
                 else:
                     raise LexicalError(
                         f"'&' isolado inválido", self.line, self.col)
- 
-            # ── q13: viu ':' ──────────────────────────────────────────
-            elif estado == 13:
+
+            # ── q6: viu ':' ───────────────────────────────────────────
+            elif estado == 6:
                 if b == '=':
                     lexema += b
-                    # q14*: emite :=
+                    # q18*: emite :=
                     self._emit(lexema, TokenType.ATRIBUICAO)
                 else:
                     if b is not None:
                         self._back()
-                    # q15*: emite :
+                    # q19*: emite :
                     self._emit(lexema, TokenType.DOIS_PONTOS)
                 lexema = ""
                 estado = 0
- 
-            # ── q16: viu '<' ──────────────────────────────────────────
-            elif estado == 16:
+
+            # ── q7: viu '<' ───────────────────────────────────────────
+            elif estado == 7:
                 if b == '=':
                     lexema += b
                     self._emit(lexema, TokenType.MENOR_IGUAL)
@@ -281,16 +260,16 @@ class Lexer:
                 else:
                     if b is not None:
                         self._back()
-                    # q17*: emite <
+                    # q20*: emite <
                     self._emit(lexema, TokenType.MENOR)
                 lexema = ""
                 estado = 0
- 
-            # ── q18: viu '>' ou primeiro '=' ─────────────────────────
-            elif estado == 18:
+
+            # ── q8: viu '>' ou primeiro '=' ───────────────────────────
+            elif estado == 8:
                 if b == '=':
                     lexema += b
-                    # >= ou ==
+                    # q21*: >= ou ==
                     if lexema == '>=':
                         self._emit(lexema, TokenType.MAIOR_IGUAL)
                     else:
@@ -299,6 +278,7 @@ class Lexer:
                     if b is not None:
                         self._back()
                     if lexema == '>':
+                        # q21*: emite >
                         self._emit(lexema, TokenType.MAIOR)
                     else:
                         raise LexicalError(
@@ -306,45 +286,45 @@ class Lexer:
                             self.line, self.col)
                 lexema = ""
                 estado = 0
- 
-            # ── q20: dentro de string ─────────────────────────────────
-            elif estado == 20:
+
+            # ── q9: dentro de string ──────────────────────────────────
+            elif estado == 9:
                 if b is None or b in ('\n', '\r'):
                     raise LexicalError(
                         "string não fechada", self.line, self.col)
                 elif b == '"':
                     lexema += b
-                    # q21*: emite CONST_STRING
+                    # q22*: emite CONST_STRING
                     self._emit(lexema, TokenType.CONST_STRING)
                     lexema = ""
                     estado = 0
                 else:
                     lexema += b
- 
-            # ── q22: viu '/' ──────────────────────────────────────────
-            elif estado == 22:
+
+            # ── q10: viu '/' ──────────────────────────────────────────
+            elif estado == 10:
                 if b == '*':
-                    # início de comentário /* ... */
+                    # início de comentário /* ... */ → q11
                     lexema = ""
-                    estado = 23
+                    estado = 11
                 else:
                     if b is not None:
                         self._back()
-                    # q10*: emite DIV
+                    # q23*: emite DIV
                     self._emit("/", TokenType.DIV)
                     lexema = ""
                     estado = 0
- 
-            # ── q23: dentro de comentário ─────────────────────────────
-            elif estado == 23:
+
+            # ── q11: dentro de comentário ─────────────────────────────
+            elif estado == 11:
                 if b is None:
                     raise LexicalError(
                         "comentário não fechado", self.line, self.col)
                 elif b == '*':
-                    estado = '23b'   # possível fechamento
- 
-            # ── q23b: viu '*' dentro de comentário ───────────────────
-            elif estado == '23b':
+                    estado = 12              # → q12 (possível fechamento)
+
+            # ── q12: viu '*' dentro de comentário ────────────────────
+            elif estado == 12:
                 if b is None:
                     raise LexicalError(
                         "comentário não fechado", self.line, self.col)
@@ -352,22 +332,22 @@ class Lexer:
                     # q24*: comentário encerrado — descarta
                     estado = 0
                 elif b == '*':
-                    pass             # continua em 23b
+                    pass                     # permanece em q12
                 else:
-                    estado = 23      # volta a consumir o comentário
- 
+                    estado = 11              # volta a consumir o comentário
+
         return self.tokens
- 
+
+
 def tokenize_file(path: str) -> tuple[list[Token], SymbolTable]:
     with open(path, 'r', encoding='utf-8') as f:
         source = f.read()
     lexer = Lexer(source)
     tokens = lexer.tokenize()
     return tokens, lexer.ts
- 
- 
+
+
 def tokenize_string(source: str) -> tuple[list[Token], SymbolTable]:
     lexer = Lexer(source)
     tokens = lexer.tokenize()
     return tokens, lexer.ts
-    
