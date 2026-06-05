@@ -8,6 +8,7 @@ import argparse
 
 from src.lexer.lexer import tokenize_string
 from src.parser.parser import parse_tokens
+from src.parser.ast_nodes import print_ast
 from src.semantic.semantic_analyzer import analyze
 from src.utils.error import LexicalError
 from src.utils.error import SyntaxError as BRLSyntaxError
@@ -42,7 +43,7 @@ def _run(source: str, verbose: bool = False) -> bool:
 
     if verbose:
         print("=== AST ===")
-        _print_ast(ast)
+        print_ast(ast)
         print()
 
     # ── Fase 3: Análise Semântica ─────────────────────────────────────────────
@@ -60,69 +61,6 @@ def _run(source: str, verbose: bool = False) -> bool:
 
     print("OK — programa aceito.")
     return True
-
-
-def _print_ast(node, indent: int = 0) -> None:
-    prefix = "  " * indent
-    if isinstance(node, list):
-        for item in node:
-            _print_ast(item, indent)
-        return
-    from src.parser.ast_nodes import (
-        Program, VarDecl, Assign, If, While, Read, Write,
-        BinOp, UnaryOp, Var, IntConst, RealConst, StringConst, BoolConst,
-    )
-    if isinstance(node, Program):
-        print(f"{prefix}Programa '{node.name}'")
-        for d in node.decls:
-            _print_ast(d, indent + 1)
-        for s in node.stmts:
-            _print_ast(s, indent + 1)
-    elif isinstance(node, VarDecl):
-        print(f"{prefix}Decl {', '.join(node.names)} : {node.type}")
-    elif isinstance(node, Assign):
-        print(f"{prefix}Atrib {node.name} :=")
-        _print_ast(node.expr, indent + 2)
-    elif isinstance(node, If):
-        print(f"{prefix}Se")
-        _print_ast(node.cond, indent + 2)
-        print(f"{prefix}  Entao")
-        for s in node.then_stmts:
-            _print_ast(s, indent + 2)
-        if node.else_stmts:
-            print(f"{prefix}  Senao")
-            for s in node.else_stmts:
-                _print_ast(s, indent + 2)
-    elif isinstance(node, While):
-        print(f"{prefix}Enquanto")
-        _print_ast(node.cond, indent + 2)
-        print(f"{prefix}  Faca")
-        for s in node.body:
-            _print_ast(s, indent + 2)
-    elif isinstance(node, Read):
-        print(f"{prefix}Leia({', '.join(node.names)})")
-    elif isinstance(node, Write):
-        print(f"{prefix}Escreva")
-        _print_ast(node.expr, indent + 2)
-    elif isinstance(node, BinOp):
-        print(f"{prefix}BinOp '{node.op}'")
-        _print_ast(node.left, indent + 2)
-        _print_ast(node.right, indent + 2)
-    elif isinstance(node, UnaryOp):
-        print(f"{prefix}UnOp '{node.op}'")
-        _print_ast(node.operand, indent + 2)
-    elif isinstance(node, Var):
-        print(f"{prefix}Var '{node.name}'")
-    elif isinstance(node, IntConst):
-        print(f"{prefix}Int {node.value}")
-    elif isinstance(node, RealConst):
-        print(f"{prefix}Real {node.value}")
-    elif isinstance(node, StringConst):
-        print(f"{prefix}Str '{node.value}'")
-    elif isinstance(node, BoolConst):
-        print(f"{prefix}Bool {'verdadeiro' if node.value else 'falso'}")
-    else:
-        print(f"{prefix}{node!r}")
 
 
 def main() -> None:

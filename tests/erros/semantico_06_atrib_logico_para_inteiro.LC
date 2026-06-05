@@ -1,0 +1,6 @@
+/* ERRO SEMANTICO: atribuicao de logico para variavel inteiro */
+
+inicio teste ;
+    x : inteiro ;
+    x := verdadeiro
+fim

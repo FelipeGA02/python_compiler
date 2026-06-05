@@ -1,0 +1,7 @@
+/* ERRO SEMANTICO: atribuicao de inteiro para variavel logico
+   Nao existe promocao implicita de inteiro para logico. */
+
+inicio teste ;
+    flag : logico ;
+    flag := 1
+fim

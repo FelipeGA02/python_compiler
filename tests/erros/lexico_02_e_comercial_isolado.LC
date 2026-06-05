@@ -1,0 +1,9 @@
+/* ERRO LEXICO: '&' isolado invalido
+   O operador logico correto e '&&' (dois ampersands).
+   Um unico '&' nao e reconhecido. */
+
+inicio teste ;
+    x : inteiro ;
+    y : inteiro ;
+    x := 1 & 2
+fim

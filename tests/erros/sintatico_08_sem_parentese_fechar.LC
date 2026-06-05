@@ -1,0 +1,7 @@
+/* ERRO SINTATICO: ')' ausente em 'leia'
+   A sintaxe correta e: leia ( id [, id] ) */
+
+inicio teste ;
+    x : inteiro ;
+    leia ( x
+fim

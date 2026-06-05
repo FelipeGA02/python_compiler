@@ -1,0 +1,8 @@
+/* ERRO LEXICO: '=' isolado invalido
+   O '=' sozinho nao existe na linguagem.
+   Use ':=' para atribuicao ou '==' para comparacao. */
+
+inicio teste ;
+    x : inteiro ;
+    x = 5
+fim

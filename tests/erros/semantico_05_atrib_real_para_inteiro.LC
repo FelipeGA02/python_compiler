@@ -1,0 +1,7 @@
+/* ERRO SEMANTICO: atribuicao de real para variavel inteiro
+   A promocao implicita so funciona em inteiro -> real, nao o contrario. */
+
+inicio teste ;
+    x : inteiro ;
+    x := 3.14
+fim

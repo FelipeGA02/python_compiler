@@ -1,0 +1,6 @@
+/* ERRO SEMANTICO: variavel 'y' usada em expressao sem ter sido declarada */
+
+inicio teste ;
+    x : inteiro ;
+    x := y + 1
+fim

@@ -1,0 +1,12 @@
+/* ERRO SEMANTICO: comparacao com '==' entre inteiro e logico
+   '==' e '<>' so permitem comparar tipos iguais,
+   ou dois tipos numericos (com promocao). */
+
+inicio teste ;
+    x : inteiro ;
+    flag : logico ;
+    resultado : logico ;
+    x := 5 ;
+    flag := verdadeiro ;
+    resultado := x == flag
+fim

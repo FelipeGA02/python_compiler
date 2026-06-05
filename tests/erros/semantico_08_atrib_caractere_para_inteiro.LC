@@ -1,0 +1,6 @@
+/* ERRO SEMANTICO: atribuicao de caractere para variavel inteiro */
+
+inicio teste ;
+    x : inteiro ;
+    x := "texto"
+fim

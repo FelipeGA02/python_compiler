@@ -1,0 +1,11 @@
+/* ERRO SEMANTICO: operador 'div' com operandos real
+   'div' (divisao inteira) exige que ambos os operandos sejam inteiro. */
+
+inicio teste ;
+    x : real ;
+    y : real ;
+    z : inteiro ;
+    x := 7.0 ;
+    y := 2.0 ;
+    z := x div y
+fim

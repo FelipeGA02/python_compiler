@@ -1,0 +1,11 @@
+/* ERRO SINTATICO: 'entao' ausente no 'se'
+   A estrutura correta e: se <cond> entao inicio ... fim */
+
+inicio teste ;
+    x : inteiro ;
+    x := 5 ;
+    se x > 0
+    inicio
+        escreva ( x )
+    fim
+fim

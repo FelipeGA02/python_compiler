@@ -1,0 +1,7 @@
+/* ERRO LEXICO: caractere inesperado '@'
+   O simbolo '@' nao pertence ao alfabeto da linguagem. */
+
+inicio teste ;
+    x : inteiro ;
+    x := 5 @ 3
+fim

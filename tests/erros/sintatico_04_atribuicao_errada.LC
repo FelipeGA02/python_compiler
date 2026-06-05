@@ -1,0 +1,8 @@
+/* ERRO SINTATICO: ':=' ausente na atribuicao
+   Apos um identificador no corpo de instrucoes espera-se
+   ':=', ',' ou ':'. Aqui o token seguinte e '5' (constante). */
+
+inicio teste ;
+    x : inteiro ;
+    x 5
+fim

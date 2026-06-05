@@ -1,0 +1,8 @@
+/* ERRO LEXICO: string nao fechada
+   A constante string foi aberta com '"' mas
+   nunca foi fechada na mesma linha. */
+
+inicio teste ;
+    msg : caractere ;
+    msg := "string sem fechar
+fim

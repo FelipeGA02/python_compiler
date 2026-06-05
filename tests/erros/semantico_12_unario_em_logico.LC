@@ -1,0 +1,9 @@
+/* ERRO SEMANTICO: operador unario '-' aplicado a logico
+   Os operadores unarios '+' e '-' so aceitam tipo numerico. */
+
+inicio teste ;
+    flag : logico ;
+    x : inteiro ;
+    flag := falso ;
+    x := - flag
+fim

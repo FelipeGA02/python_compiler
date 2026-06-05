@@ -1,0 +1,11 @@
+/* ERRO SEMANTICO: operador 'mod' com operando real
+   'mod' exige que ambos os operandos sejam inteiro. */
+
+inicio teste ;
+    x : inteiro ;
+    y : real ;
+    z : inteiro ;
+    x := 7 ;
+    y := 2.0 ;
+    z := x mod y
+fim

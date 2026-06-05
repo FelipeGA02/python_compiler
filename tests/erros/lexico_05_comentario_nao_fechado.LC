@@ -1,0 +1,11 @@
+/* ERRO LEXICO: comentario nao fechado
+   O bloco de comentario abaixo nunca e encerrado com asterisco-barra. */
+
+inicio teste ;
+    x : inteiro ;
+
+/* este comentario começa aqui mas nunca termina
+   e consome o restante do arquivo...
+
+    x := 10
+fim

@@ -1,0 +1,11 @@
+/* ERRO SINTATICO: 'faca' ausente no 'enquanto'
+   A estrutura correta e: enquanto <cond> faca inicio ... fim */
+
+inicio teste ;
+    x : inteiro ;
+    x := 5 ;
+    enquanto x > 0
+    inicio
+        x := x - 1
+    fim
+fim

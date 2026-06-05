@@ -1,0 +1,5 @@
+/* ERRO SEMANTICO: variavel 'x' usada em 'leia' sem ter sido declarada */
+
+inicio teste ;
+    leia ( x )
+fim

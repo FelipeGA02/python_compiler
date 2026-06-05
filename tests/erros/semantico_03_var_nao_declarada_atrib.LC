@@ -1,0 +1,5 @@
+/* ERRO SEMANTICO: variavel 'x' usada como alvo de atribuicao sem declaracao */
+
+inicio teste ;
+    x := 5
+fim

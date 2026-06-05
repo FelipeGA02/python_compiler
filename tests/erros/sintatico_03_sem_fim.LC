@@ -1,0 +1,7 @@
+/* ERRO SINTATICO: 'fim' ausente no final do programa
+   Todo programa deve ser encerrado com a palavra 'fim'. */
+
+inicio teste ;
+    x : inteiro ;
+    x := 5 ;
+    escreva ( x )

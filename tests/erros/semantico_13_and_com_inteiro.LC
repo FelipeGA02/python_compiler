@@ -1,0 +1,11 @@
+/* ERRO SEMANTICO: operador '&&' com operandos inteiro
+   '&&' exige que ambos os operandos sejam do tipo logico. */
+
+inicio teste ;
+    x : inteiro ;
+    y : inteiro ;
+    flag : logico ;
+    x := 3 ;
+    y := 5 ;
+    flag := x && y
+fim

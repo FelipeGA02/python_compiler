@@ -1,0 +1,7 @@
+/* ERRO SEMANTICO: variavel declarada duas vezes no mesmo escopo */
+
+inicio teste ;
+    x : inteiro ;
+    x : real ;
+    x := 5
+fim

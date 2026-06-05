@@ -1,0 +1,10 @@
+/* ERRO SEMANTICO: condicao do 'enquanto' e do tipo caractere, nao logico */
+
+inicio teste ;
+    msg : caractere ;
+    msg := "ola" ;
+    enquanto msg faca
+    inicio
+        escreva ( msg )
+    fim
+fim

@@ -1,0 +1,10 @@
+/* ERRO SEMANTICO: operador 'ou' com operando real
+   'ou' exige que ambos os operandos sejam do tipo logico. */
+
+inicio teste ;
+    x : real ;
+    flag : logico ;
+    x := 1.0 ;
+    flag := verdadeiro ;
+    flag := flag ou x
+fim

@@ -1,0 +1,10 @@
+/* ERRO SEMANTICO: condicao do 'se' e do tipo inteiro, nao logico */
+
+inicio teste ;
+    x : inteiro ;
+    x := 5 ;
+    se x entao
+    inicio
+        escreva ( x )
+    fim
+fim

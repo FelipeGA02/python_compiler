@@ -1,0 +1,12 @@
+/* ERRO SEMANTICO: operador '+' com operandos logico
+   Operadores aritmeticos exigem operandos numericos (inteiro ou real),
+   exceto '+' entre dois caractere (concatenacao). */
+
+inicio teste ;
+    a : logico ;
+    b : logico ;
+    x : inteiro ;
+    a := verdadeiro ;
+    b := falso ;
+    x := a + b
+fim

@@ -1,0 +1,9 @@
+/* ERRO SEMANTICO: operador 'not' aplicado a inteiro
+   'not' so aceita operando do tipo logico. */
+
+inicio teste ;
+    x : inteiro ;
+    flag : logico ;
+    x := 5 ;
+    flag := not x
+fim

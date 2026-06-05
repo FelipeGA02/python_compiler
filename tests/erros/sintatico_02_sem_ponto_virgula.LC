@@ -1,0 +1,7 @@
+/* ERRO SINTATICO: ';' ausente apos o nome do programa
+   Apos 'inicio nome' e obrigatorio um ponto e virgula. */
+
+inicio teste
+    x : inteiro ;
+    x := 5
+fim

@@ -1,0 +1,7 @@
+/* ERRO SINTATICO: tipo ausente na declaracao de variavel
+   Apos ':' espera-se um dos tipos: inteiro, real, logico, caractere. */
+
+inicio teste ;
+    x : ;
+    x := 5
+fim

@@ -1,0 +1,8 @@
+/* ERRO SINTATICO: palavra reservada 'inicio' ausente
+   O programa deve comecar com 'inicio nome ;'.
+   Aqui usamos 'prog' (identificador) no lugar de 'inicio'. */
+
+prog teste ;
+    x : inteiro ;
+    x := 5
+fim
