@@ -1,6 +1,6 @@
 # Compilador BRL — Front-end
 
-> Felipe Gurgel Araujo — D21120
+Front-end de compilador (análise léxica, sintática e semântica) para a linguagem de ensino BRL, escrito em Python puro.
 
 Implementação do **front-end** de um compilador para a linguagem **BRL** (Portuguese-like), desenvolvida em Python puro, sem dependências externas. Cobre as três fases iniciais do pipeline de compilação:
 
@@ -22,6 +22,20 @@ Código-fonte (.LC)
 │  Análise Semântica   │  Verificação de tipos, escopos e compatibilidade
 └──────────────────────┘
 ```
+
+---
+
+## Problema que resolve e para quem
+
+Quem estuda compiladores costuma ver as fases de análise só na teoria. Este projeto implementa, sem bibliotecas prontas de *parsing*, as três primeiras fases de um compilador para uma linguagem com sintaxe em português, com mensagens de erro que indicam linha, coluna e o tipo de erro (léxico, sintático ou semântico). Serve a estudantes e professores de Compiladores como material de referência e a quem escreve programas BRL e precisa validar o código-fonte antes de executá-lo.
+
+## Tecnologias utilizadas
+
+- Python 3.10+, apenas biblioteca padrão (sem dependências externas).
+
+## Minha contribuição
+
+Projeto individual, disciplina de Compiladores. Código, modelagem e documentação de minha autoria.
 
 ---
 

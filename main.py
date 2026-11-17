@@ -1,5 +1,5 @@
 """
-    Felipe Gurgel Araujo - D21120
+    Felipe Gurgel Araújo
     Compilador BRL — pipeline: Léxico → Sintático → Semântico
 """
 
